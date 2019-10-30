@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dao.AccountMapper">
+ 
+  <select id="login" resultType="bean.Account" parameterType="bean.Account">
+  		select * from account where username=#{username} and password=MD5(#{password})
+  </select>
+  
+  <select id="selectUserByUsername" resultType="bean.Account" parameterType="String">
+  		select * from account where username=#{username}
+  </select>
+  
+  <insert id="registerUser" parameterType="bean.Account">
+  		insert into account values(#{username},MD5(#{password}))
+  </insert>
+  
+  <update id="updatePasswordByUser" parameterType="bean.Account">
+  		update account set password=MD5(#{password}) where username=#{username}
+  </update>
+  
+</mapper>

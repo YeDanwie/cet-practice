@@ -1,0 +1,120 @@
+<!-- 登录页面 -->
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="utf-8">
+	<title>登录四六级单词助手</title>
+	<link rel="icon" th:href="@{assets/img/like.ico}" type="image/x-icon"> 
+	<script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+</head>
+
+<body th:background="@{assets/img/bg.jpg}">
+	<h1 style="color:white; margin-left:100px; margin-top:50px">四六级单词助手</h1>
+	<!--使用css为登录框添加白色背景，右浮动-->
+	<div align="center" id="white" style="background: rgba(255,255,255,0.7); width: 400px; float: right; margin-top: 50px; margin-right: 500px; padding:20px 0">
+		<form id="login-form">
+			<!-- 隐藏的输入框，值已设定为login，便于响应页面辨别请求的类型 -->
+			<input type="text" id="type" name="type" value="login" style="display:none"/>
+			<p>
+				<!--align=“top”使图标与输入框垂直对齐-->
+				<img th:src="@{assets/img/user.png}" align="top" style="border: 1px solid black;" alt="id"/>
+				<!--当用户试图输入学号时，隐藏之前出现的“请输入用户名”-->
+				<input type="text" id="id" name="id" style="height: 30px; margin-left: -3px" placeholder="用户名"/><br>
+				<!--使用visibility属性控制提示信息的隐藏或显示-->
+				<span id="id-tip" style="color: red; font-size: 15px; visibility: hidden;">请输入用户名</span>
+			</p>
+			<p>
+				<img th:src="@{assets/img/password.png}" align="top" style="border: 1px solid black;" alt="pwd"/>
+				<input type="password" id="pwd" name="pwd" style="height: 30px; margin-left: -3px;" placeholder="密码"/><br>
+				<span id="pwd-tip" style="color: red; font-size: 15px; visibility: hidden;">请输入密码</span>
+			</p>
+			<p>
+				<input type="text" id="code" name="code" size="10" placeholder="验证码" style="height: 25px; margin-right: 10px;"><img id="imgValidate" th:src="@{getCode}">
+			</p>
+			<p>
+				<!--当用户点下按钮时调用 judge()函数判断是否已输入用户名或密码-->
+				<input type="button" id="login" value="登录" style="background: #5ADBF0; width: 200px; height: 30px; border-radius: 5px; font-size: 20px; color: white"/>
+			</p>
+			<p>
+				<input type="button" id="toRegister" value="去注册" style="background: #5ADBF0; width: 200px; height: 30px; border-radius: 5px; font-size: 20px; color: white"/>
+			</p>
+		</form>
+	</div>
+	
+	<script type="text/javascript">
+		$("#id").on("focus",function(){
+			$("#id-tip").css("visibility","hidden");
+		});
+		
+		$("#pwd").focus(function(){
+			$("#pwd-tip").css("visibility","hidden");
+		});
+		
+		$("#imgValidate").click(function() {
+			$(this).attr("src","getCode?id="+Math.random());
+		})
+		
+		$("#login").click(function() {
+			var id = $("#id").val();
+			var pwd = $("#pwd").val();
+			var validate = $("#code").val();
+			
+			if(judge(id,pwd,validate)==true) {
+				$.ajax({
+					url: "login",
+					type: "post",
+					data: {
+							"username": id,
+							"password": pwd,
+							"inputCode": validate
+					},
+					//contentType: "applicatioin/json;charset=utf-8",
+					//dataType: "json",
+					success: function(data) {
+						data=JSON.parse(data);
+						if(data.isSuccess)
+							window.location.href = "/index";
+						else {
+							alert("用户名或密码错误！");
+						}
+					}
+				})
+			}
+		});
+		
+		$("#toRegister").click(function() {
+			window.open("toRegister");
+		});
+	
+	
+		//点下按钮时调用的函数，判断有无输入用户名和密码，或者用户名和密码是否正确
+		function judge(id,pwd,validate){
+			//没有输入用户名，则显示“请输入用户名”的提示
+			if(id == null || id == "") {
+				$("#id-tip").css("visibility", "visible");
+				return false;
+			}
+			
+			var pattern = /[*%-]{1,}/;
+			if(id.search(pattern)>=0) {
+				alert("用户名不能包含*、-、%等特殊符号");
+				return false;
+			}
+			
+			//没有输入密码，则显示“请输入密码”的提示
+			if(pwd == null || pwd == "") {
+				$("#pwd-tip").css("visibility", "visible");
+				return false;
+			}
+			
+			//没有输入验证码，则显示“请输入验证码”的提示
+			if(validate == null || validate == "") {
+				alert("请输入验证码")
+				return false;
+			}
+			
+			return true;
+		}
+	</script>
+</body>
+</html>

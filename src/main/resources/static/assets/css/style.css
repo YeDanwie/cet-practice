@@ -1,0 +1,19 @@
+.topic-list {
+	margin-left: 20px;
+	background: none;
+}
+
+.topic-list li {
+	background: none;
+	border: none;
+	border-bottom: solid 1px gray;
+}
+
+.topic-list li a {
+	font-size: 20px;
+	color:black;
+}
+
+.topic-list li a i{
+	color:gray;
+}

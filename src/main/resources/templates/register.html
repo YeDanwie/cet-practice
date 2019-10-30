@@ -1,0 +1,91 @@
+<!-- 注册页面 -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<title>注册四六级单词助手</title>
+<script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+<link rel="icon" th:href="@{assets/img/like.ico}" type="image/x-icon">
+</head>
+<body th:background="@{assets/img/bg.jpg}">
+	<h1 style="color:white; margin-left:100px; margin-top:50px">注册四六级单词助手</h1>
+	<!--使用css为登录框添加白色背景，右浮动-->
+	<div align="center" style="background: rgba(255,255,255,0.7); width: 480px; margin-top: 50px; margin-left: 350px; padding:20px">
+		<form id="register-form">
+			<table style="border-spacing:0px 10px;">
+				<tr style="display:none">
+					<!-- 隐藏的输入框，值已设定为regiser，便于响应页面辨别请求的类型 -->
+					<td><input type="text" id="type" name="type" value="register"/></td>
+				</tr>
+				<tr>
+					<td>用户名：</td>
+					<td><input type="text" id="id" name="id" style="width:180px; height: 30px;" placeholder="必填"/></td>
+				</tr>
+				<tr>
+					<td>设置密码：</td>
+					<td><input type="password" id="setPwd" name="setPwd" style="width:180px; height: 30px;" placeholder="必填"/></td>
+				</tr>
+				<tr>
+					<td>确认密码：</td>
+					<td><input type="password" id="confirmPwd" name="confirmPwd" style="width:180px; height: 30px;" placeholder="必填"/></td>
+				</tr>
+				<tr>
+					<td><input type="reset" value="重置"  style="background: #5ADBF0; width: 100px; height: 30px; border-radius: 5px; font-size: 20px; color: white"/></td>
+					<td><input type="button" id="register" value="注册" style="background: #5ADBF0; width: 100px; height: 30px; border-radius: 5px; font-size: 20px; color: white"/></td>
+				</tr>
+			</table>
+		</form>
+	</div>
+	<script type="text/javascript">
+		$("#register").click(function() {
+			var id = $("#id").val();
+			var setPwd = $("#setPwd").val();
+			var confirmPwd = $("#confirmPwd").val();
+			
+			if(judge(id,setPwd,confirmPwd)==true) {
+				$.ajax({
+					url: "/register",
+					type: "post",
+					data: {
+							"username": id,
+							"password": setPwd
+					},
+					success: function(data) {
+						data=JSON.parse(data);
+						if(data.isSuccess)
+							alert("注册成功！");
+						else
+							alert("用户名已存在！");
+					}
+				})
+			}
+		});
+	
+		//点下注册按钮时调用的函数，判断有无输入用户名和密码，以及确认密码是否正确
+		function judge(id,setPwd,confirmPwd){
+			if(id!=null && id!="" && setPwd!=null && setPwd!="" && confirmPwd!=null && confirmPwd!="" ) {
+				
+				var pattern = /[*%-]{1,}/;
+				if(id.search(pattern)>=0) {
+					alert("用户名不能包含*、-、%等特殊符号");
+					return false;
+				}
+				
+				if(setPwd==confirmPwd) {
+					//密码与确认密码相同才能提交注册信息
+					return true;
+				} else {
+					//清空密码框，提示密码不一致
+					$("#setPwd").attr("value","");
+					$("#confirmPwd").attr("value","");
+					alert("两次密码输入不一致，请重新设置密码。");
+					return false;
+				}
+			} else {
+				alert("请将注册信息填写完整。");
+				return false;
+			}
+		}
+	</script>
+</body>
+</html>

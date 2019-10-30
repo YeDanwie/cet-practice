@@ -1,0 +1,194 @@
+<!-- 讨论页面 -->
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<title>四六级单词助手</title>
+<link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script th:src="@{assets/js/script.js}"></script>
+<link rel="stylesheet" th:href="@{assets/css/style.css}">
+<link rel="icon" th:href="@{assets/img/like.ico}" type="image/x-icon">
+</head>
+
+<body>
+	<div style="position:absolute; width:100%; height:100%; z-index:-1">  
+	<img th:src="@{assets/img/bg.jpg}" height="100%" width="100%"/>  
+	</div>
+	<div class="container">
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+			<nav class="navbar navbar-default" role="navigation" style="background:rgba(255,255,255,0.9);">
+				<div class="navbar-header">
+					 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"> 
+						 <span class="sr-only">Toggle navigation</span><span class="icon-bar"></span>
+						 <span class="icon-bar"></span><span class="icon-bar"></span>
+					 </button> 
+					 <a class="navbar-brand" href="index"><b>四六级单词助手</b></a>
+					 <a class="navbar-brand" href="/exit" th:text="${username}+' 退出'">用户名 退出</a>
+				</div>
+				
+				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+					<ul class="nav navbar-nav navbar-right">
+						<li>
+							 <a href="index">首页</a>
+						</li>
+						<li>
+							 <a href="memorize">记单词</a>
+						</li>
+						<li>
+							 <a href="practice">做练习</a>
+						</li>
+						<li class="active">
+							 <a href="resource">讨论区</a>
+						</li>
+						<li>
+							 <a href="info">个人</a>
+						</li>
+						<li>
+						<div class="navbar-form navbar-left" role="search">
+						<div class="form-group">
+							<input id="input-word" type="text" class="form-control" />
+						</div> 
+							<button class="btn btn-primary" data-toggle="modal" onClick="openMotai()">翻译</button>
+						<!--模态框-->
+						<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+							<div class="modal-dialog">
+								<div class="modal-content">
+									<div class="modal-header">
+										<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+											&times;
+										</button>
+										<h4 class="modal-title" id="myModalLabel">
+											翻译结果
+										</h4>
+									</div>
+									<div class="modal-body">
+										<div style="margin: 10px 20px;">
+											<p>
+												<h1>『</h1>
+												<p id="translate-result" align="center" style="font-size: 50px">apple</p>
+												<p id="key-word" align="center">n. 苹果</p>
+												<h1 align="right">』</h1>
+											</p>
+										</div>
+										<audio src="http://media.shanbay.com/audio/us/apple.mp3" id="aud"></audio>
+										<p align="center"><img th:src="@{assets/img/play.png}" id="playpause"/></p>
+										<script type="text/javascript">
+											$("#playpause").click(function() {
+												if ($("#aud")[0].paused) {
+													$("#aud")[0].play();
+												} else {
+													$("#aud")[0].pause();
+												}
+											});
+											$("#aud")[0].addEventListener("play", function () {
+												$("#playpause").attr("src","../static/assets/img/pause.png");
+											},false);
+											$("#aud")[0].addEventListener("pause", function () {
+												$("#playpause").attr("src","../static/assets/img/play.png");
+											},false);
+										</script>
+									</div>
+									<div class="modal-footer">
+										<button type="button" class="btn btn-default" data-dismiss="modal">关闭
+										</button>
+									</div>
+								</div><!-- /.modal-content -->
+							</div><!-- /.modal -->
+						</div>
+						</div>
+						</li>
+					</ul>
+					
+				</div>
+				
+			</nav>
+		</div>
+	</div>
+	<div style="background:rgba(255,255,255,0.6); padding: 5px 20px;">
+		<h1>
+			讨论区
+		</h1>
+		<p>
+			四六级单词助手帮你搜罗了近年来的考试真题以及其他的相关学习资料，除此之外还能和其他用户共同讨论学习技巧。
+		</p>
+	</div>
+	<div class="row clearfix" style="margin-top: 20px">
+		<div class="col-md-12 column">
+			<div class="row">
+				<div class="col-md-4">
+					<a class="list-group-item active">下载资料</a>
+					<ul class="list-group">
+					    <li class="list-group-item"><a th:href="@{assets/CET_EXAM/18年6月四级第1套真题.pdf}">18年6月四级第1套真题</a></li>
+						<li class="list-group-item"><a th:href="@{assets/CET_EXAM/18年6月四级第1套答案详解.pdf}">18年6月四级第1套答案详解</a></li>
+						<li class="list-group-item"><a th:href="@{assets/CET_EXAM/18年6月六级第1套真题.pdf}">18年6月六级第1套真题</a></li>
+						<li class="list-group-item"><a th:href="@{assets/CET_EXAM/18年6月六级第1套答案详解.pdf}">18年6月六级第1套答案详解</a></li>
+						<li class="list-group-item"><a th:href="@{assets/CET_EXAM/17年6月四级第1套真题.pdf}">17年6月四级第1套真题</a></li>
+						<li class="list-group-item"><a th:href="@{assets/CET_EXAM/17年6月四级第1套答案详解.pdf}">17年6月四级第1套答案详解</a></li>
+						<li class="list-group-item"><a th:href="@{assets/CET_EXAM/17年6月六级第1套真题.pdf}">17年6月六级第1套真题</a></li>
+						<li class="list-group-item"><a th:href="@{assets/CET_EXAM/17年6月六级第1套答案详解.pdf}">17年6月六级第1套答案详解</a></li>
+						<li class="list-group-item"><a th:href="@{assets/CET_EXAM/16年6月四级第1套真题.pdf}">16年6月四级第1套真题</a></li>
+						<li class="list-group-item"><a th:href="@{assets/CET_EXAM/16年6月四级第1套答案详解.pdf}">16年6月四级第1套答案详解</a></li>
+						<li class="list-group-item"><a th:href="@{assets/CET_EXAM/16年6月六级第1套真题.pdf}">16年6月六级第1套真题</a></li>
+						<li class="list-group-item"><a th:href="@{assets/CET_EXAM/16年6月六级第1套答案详解.pdf}">16年6月六级第1套答案详解</a></li>
+						<a class="list-group-item active"> </a>
+					</ul>
+					
+				</div>
+				<div class="col-md-8">
+					<div class="thumbnail" style="background:rgba(255,255,255,0.6);">
+						<ul class="breadcrumb" style="background: none;">
+							<li class="active">讨论区</li>
+						</ul>
+						<p align="center"><button class="btn btn-primary" data-toggle="modal" href="#formModal">发起讨论</button></p>
+						<!--模态框-->
+						<div class="modal fade" id="formModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+							<div class="modal-dialog">
+								<div class="modal-content">
+									<div class="modal-header">
+										<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+											&times;
+										</button>
+										<h4 class="modal-title" id="myModalLabel">
+											发起讨论
+										</h4>
+									</div>
+									<div class="modal-body">
+										<div style="margin: 10px 20px;">
+											<p>请勿添加{、%、*等特殊字符</p>
+											<form role="form">
+												<div class="form-group">
+													 <label for="theme">主题</label>
+													 <input type="text" class="form-control" id="theme" name="theme" required="required"/>
+												</div>
+												<div class="form-group">
+													 <label for="content">内容</label>
+													 <textarea class="form-control" id="content" name="content" required="required" /></textarea>
+												</div>
+												<button id="submitTopic" onClick="createTopic()" class="btn btn-default">提交</button>
+											</form>
+										</div>
+										
+									</div>
+									<div class="modal-footer">
+										<button type="button" class="btn btn-default" data-dismiss="modal">关闭
+										</button>
+									</div>
+								</div><!-- /.modal-content -->
+							</div><!-- /.modal -->
+						</div>
+						<div class="topic-list">
+							<li class='list-group-item' th:each="topic:${topics}">
+								<a th:href="@{'/discuss?topic_id='+${topic.id}}" th:text="${topic.upper}+': '+${topic.theme}+' '+${topic.create_date}">创建人：主题主题主题主题主题 创建时间</a>
+							</li>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+</body>
+</html>

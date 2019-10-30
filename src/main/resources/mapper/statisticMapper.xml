@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dao.StatisticMapper">
+ 
+  <select id="queryByUser" resultType="bean.Statistic" parameterType="bean.Account">
+  		select * from statistic where username=#{username}
+  </select>
+  
+  <update id="updateForUserWrong" parameterType="bean.Account">
+  		update statistic set total_count=total_count+1 where username=#{username}
+  </update>
+  
+  <update id="updateForUserCorrect" parameterType="bean.Account">
+  		update statistic set total_count=total_count+1,correct_count=correct_count+1 where username=#{username}
+  </update>
+  
+</mapper>

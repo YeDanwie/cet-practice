@@ -1,0 +1,179 @@
+<!-- 记单词页面 -->
+<!--<%@ page import="java.util.*,vo.Word,servlets.RequestTools" %>-->
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<title>四六级单词助手</title>
+<link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script th:src="@{assets/js/script.js}"></script>
+<link rel="icon" th:href="@{assets/img/like.ico}" type="image/x-icon">
+<style>	
+	.list-group-item:hover {background: #BBBBBB; cursor:pointer;}
+	.selected-word {background: #BBBBBB;}
+</style>
+<script>
+	var pre_selected=document.getElementById("word-list").lastChild;
+	var current_selected=document.getElementById("word-list").firstChild;
+	current_selected.className="list-group-item selected-word";
+</script>
+</head>
+
+<body>
+<div style="position:absolute; width:100%; height:100%; z-index:-1">  
+<img th:src="@{assets/img/bg.jpg}" height="100%" width="100%"/>  
+</div>
+<div class="container">
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+			<nav class="navbar navbar-default" role="navigation" style="background:rgba(255,255,255,0.9);">
+				<div class="navbar-header">
+					 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"> 
+						 <span class="sr-only">Toggle navigation</span><span class="icon-bar"></span>
+						 <span class="icon-bar"></span><span class="icon-bar"></span>
+					 </button> 
+					 <a class="navbar-brand" href="index"><b>四六级单词助手</b></a>
+					 <a class="navbar-brand" href="/exit" th:text="${username}+' 退出'">用户名 退出</a>
+				</div>
+
+				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+					<ul class="nav navbar-nav navbar-right">
+						<li>
+							 <a href="index">首页</a>
+						</li>
+						<li class="active">
+							 <a href="memorize">记单词</a>
+						</li>
+						<li>
+							 <a href="practice">做练习</a>
+						</li>
+						<li>
+							 <a href="resource">讨论区</a>
+						</li>
+						<li>
+							 <a href="info">个人</a>
+						</li>
+						<li>
+						<div class="navbar-form navbar-left" role="search">
+						<div class="form-group">
+							<input id="input-word" type="text" class="form-control" />
+						</div> 
+							<button class="btn btn-primary" data-toggle="modal" onClick="openMotai()">翻译</button>
+						<!--模态框-->
+						<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+							<div class="modal-dialog">
+								<div class="modal-content">
+									<div class="modal-header">
+										<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+											&times;
+										</button>
+										<h4 class="modal-title" id="myModalLabel">
+											翻译结果
+										</h4>
+									</div>
+									<div class="modal-body">
+										<div style="margin: 10px 20px;">
+											<p>
+												<h1>『</h1>
+												<p id="translate-result" align="center" style="font-size: 50px"></p>
+												<p id="key-word" align="center"></p>
+												<h1 align="right">』</h1>
+											</p>
+										</div>
+										<audio id="aud"></audio>
+										<p align="center"><img th:src="@{assets/img/play.png}" id="playpause"/></p>
+										<script type="text/javascript">
+											$("#playpause").click(function() {
+												if ($("#aud")[0].paused) {
+													$("#aud")[0].play();
+												} else {
+													$("#aud")[0].pause();
+												}
+											});
+											$("#aud")[0].addEventListener("play", function () {
+												$("#playpause").attr("src","../static/assets/img/pause.png");
+											},false);
+											$("#aud")[0].addEventListener("pause", function () {
+												$("#playpause").attr("src","../static/assets/img/play.png");
+											},false);
+										</script>
+									</div>
+									<div class="modal-footer">
+										<button type="button" class="btn btn-default" data-dismiss="modal">关闭
+										</button>
+									</div>
+								</div><!-- /.modal-content -->
+							</div><!-- /.modal -->
+						</div>
+						</div>
+						</li>
+					</ul>
+				</div>
+			</nav>
+		</div>
+	</div>
+	<div style="background:rgba(255,255,255,0.6); padding: 5px 20px;">
+		<h1>
+			记单词
+		</h1>
+		<p>
+			利用零碎时间逐个学习四六级考试的高频单词，包括其拼写、中文含义和发音，如若遇到不懂的单词，在导航栏搜索框输入单词或中文进行翻译。
+		</p>
+	</div>
+	<div class="row clearfix" style="margin-top: 20px">
+		<div class="col-md-12 column">
+			<div class="row">
+				<div class="col-md-4" style="height: 400px">
+					<a class="list-group-item active">单词列表</a>
+					<div class="row pre-scrollable" style="margin: 0px 0px;">
+						<ul id="word-list" class="list-group">
+							<li class="list-group-item" onClick="changeWord(this)" th:each="word:${words}" th:text="${word.english}+' '+${word.chinese}">english 中文</li>
+						</ul>
+					</div>
+					<a class="list-group-item active"> </a>
+				</div>
+				<div class="col-md-8">
+					<div class="thumbnail" style="background:rgba(255,255,255,0.6); margin: 20px 50px">
+						<div style="margin: 10px 20px;">
+						<p>
+							<h1>『</h1>
+							<p id="english" align="center" style="font-size: 50px"></p>
+							<p id="chinese" align="center"></p>
+							<h1 align="right">』</h1>
+						</p>
+						</div>
+						
+						<p align="center">
+							<a class="btn btn-primary" onClick="preWord()">«上一个</a>
+							&nbsp;&nbsp;&nbsp;&nbsp;
+							<audio id="m_aud"></audio>
+							<img th:src="@{assets/img/play.png}" id="m_playpause" />
+							<script type="text/javascript">
+								$("#m_playpause").click(function() {
+									if ($("#m_aud")[0].paused) {
+										$("#m_aud")[0].play();
+									} else {
+										$("#m_aud")[0].pause();
+									}
+								});
+								$("#m_aud")[0].addEventListener("play", function (e) {
+									$("#m_playpause").attr("src","../static/assets/img/pause.png");
+								}, false);
+								$("#m_aud")[0].addEventListener("pause", function (e) {
+									$("#m_playpause").attr("src","../static/assets/img/play.png");
+								}, false);
+							</script>
+							&nbsp;&nbsp;&nbsp;&nbsp;
+							<a class="btn btn-primary" onClick="nextWord()">下一个»</a>
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+</body>
+</html>
